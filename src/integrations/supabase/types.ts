@@ -14,7 +14,176 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      emails: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          key_points: string | null
+          meeting_id: string | null
+          purpose: string
+          recipient: string
+          subject: string
+          task_id: string | null
+          tone: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          key_points?: string | null
+          meeting_id?: string | null
+          purpose: string
+          recipient: string
+          subject?: string
+          task_id?: string | null
+          tone?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          key_points?: string | null
+          meeting_id?: string | null
+          purpose?: string
+          recipient?: string
+          subject?: string
+          task_id?: string | null
+          tone?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emails_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emails_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meetings: {
+        Row: {
+          action_items: Json
+          created_at: string
+          decisions: string[]
+          discussion_points: string[]
+          id: string
+          meeting_date: string
+          raw_notes: string
+          summary: string[]
+          title: string
+          user_id: string
+        }
+        Insert: {
+          action_items?: Json
+          created_at?: string
+          decisions?: string[]
+          discussion_points?: string[]
+          id?: string
+          meeting_date?: string
+          raw_notes: string
+          summary?: string[]
+          title: string
+          user_id: string
+        }
+        Update: {
+          action_items?: Json
+          created_at?: string
+          decisions?: string[]
+          discussion_points?: string[]
+          id?: string
+          meeting_date?: string
+          raw_notes?: string
+          summary?: string[]
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          created_at: string
+          details: string | null
+          due_date: string | null
+          estimated_minutes: number | null
+          id: string
+          meeting_id: string | null
+          owner: string | null
+          priority: string
+          rationale: string | null
+          status: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          due_date?: string | null
+          estimated_minutes?: number | null
+          id?: string
+          meeting_id?: string | null
+          owner?: string | null
+          priority?: string
+          rationale?: string | null
+          status?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          due_date?: string | null
+          estimated_minutes?: number | null
+          id?: string
+          meeting_id?: string | null
+          owner?: string | null
+          priority?: string
+          rationale?: string | null
+          status?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_meeting_id_fkey"
+            columns: ["meeting_id"]
+            isOneToOne: false
+            referencedRelation: "meetings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
