@@ -56,6 +56,7 @@ function Emails() {
   const qc = useQueryClient();
   const search = Route.useSearch();
   const gen = useServerFn(generateEmail);
+  const draftRef = useRef<HTMLDivElement | null>(null);
 
   const [recipient, setRecipient] = useState("");
   const [purpose, setPurpose] = useState("");
@@ -64,6 +65,8 @@ function Emails() {
   const [linkedTask, setLinkedTask] = useState<string>("none");
   const [linkedMeeting, setLinkedMeeting] = useState<string>("none");
   const [draft, setDraft] = useState<{ subject: string; body: string } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
 
   const tasks = useQuery({ queryKey: ["tasks"], queryFn: fetchTasks });
   const meetings = useQuery({ queryKey: ["meetings"], queryFn: fetchMeetings });
