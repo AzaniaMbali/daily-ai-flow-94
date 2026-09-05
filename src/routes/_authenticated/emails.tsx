@@ -107,35 +107,47 @@ function Emails() {
   })();
 
   const run = useMutation({
-    mutationFn: async () =>
-      gen({
+    mutationFn: async () => {
+      setErrorMessage(null);
+      return gen({
         data: {
-          recipient,
-          purpose,
-          keyPoints,
+          recipient: recipient.trim(),
+          purpose: purpose.trim(),
+          keyPoints: keyPoints.trim(),
           tone,
           context,
           senderName: user?.user_metadata?.["display_name"] ?? "",
         },
-      }),
+      });
+    },
     onSuccess: async (result) => {
       setDraft(result);
+      setErrorMessage(null);
+      requestAnimationFrame(() =>
+        draftRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      );
+      if (!user?.id) return;
       const { error } = await supabase.from("emails").insert({
-        user_id: user!.id,
-        recipient,
-        purpose,
-        key_points: keyPoints,
+        user_id: user.id,
+        recipient: recipient.trim(),
+        purpose: purpose.trim(),
+        key_points: keyPoints.trim(),
         tone,
         subject: result.subject,
         body: result.body,
         task_id: linkedTask === "none" ? null : linkedTask,
         meeting_id: linkedMeeting === "none" ? null : linkedMeeting,
       });
-      if (error) toast.error(error.message);
+      if (error) toast.error(`Draft created but not saved: ${error.message}`);
       else void qc.invalidateQueries({ queryKey: ["emails"] });
     },
-    onError: (e: Error) => toast.error(e.message || "Could not generate this email"),
+    onError: (e: Error) => {
+      const message = e.message?.trim() || "Could not generate this email. Please try again.";
+      setErrorMessage(message);
+      toast.error(message);
+    },
   });
+
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
