@@ -226,7 +226,7 @@ function Emails() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Related meeting</Label>
+                <Label>Related meeting (optional)</Label>
                 <Select value={linkedMeeting} onValueChange={setLinkedMeeting}>
                   <SelectTrigger>
                     <SelectValue placeholder="None" />
@@ -242,7 +242,7 @@ function Emails() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Related task</Label>
+                <Label>Related task (optional)</Label>
                 <Select value={linkedTask} onValueChange={setLinkedTask}>
                   <SelectTrigger>
                     <SelectValue placeholder="None" />
@@ -258,28 +258,49 @@ function Emails() {
                 </Select>
               </div>
             </div>
-            <Button
-              onClick={() => run.mutate()}
-              disabled={run.isPending || !recipient.trim() || purpose.trim().length < 3}
-            >
-              <Sparkles className="size-4" />
-              {run.isPending ? "Writing…" : "Generate email"}
-            </Button>
+            <div className="space-y-2">
+              <Button
+                onClick={() => run.mutate()}
+                disabled={run.isPending || !recipient.trim() || purpose.trim().length < 3}
+              >
+                {run.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Sparkles className="size-4" />
+                )}
+                {run.isPending ? "Writing…" : "Generate email"}
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Only a recipient, a purpose and a tone are required. A related meeting or task is
+                optional.
+              </p>
+              {errorMessage && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errorMessage}
+                </p>
+              )}
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card ref={draftRef}>
           <CardHeader>
             <CardTitle className="text-lg">Draft</CardTitle>
             <CardDescription>Review, tweak and copy.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {!draft && (
+            {run.isPending && (
+              <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="size-4 animate-spin" /> Writing your email…
+              </p>
+            )}
+            {!draft && !run.isPending && (
               <p className="text-sm text-muted-foreground">
                 Your generated email will appear here.
               </p>
             )}
-            {draft && (
+            {draft && !run.isPending && (
+
               <>
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
